@@ -8,6 +8,6 @@ public class LocationDTO {
     private String city;
     private String region;
     private String country;
-    private Double longitude;
     private Double latitude;
+    private Double longitude;
 }

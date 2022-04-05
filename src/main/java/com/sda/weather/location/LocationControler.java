@@ -1,6 +1,10 @@
 package com.sda.weather.location;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class LocationControler {
 
@@ -12,20 +16,33 @@ public class LocationControler {
         this.locationService = locationService;
     }
 
-    public String createLocation(String json) {
+    public String createLocations(String json) {
         try {
             LocationDTO requestbBody = objectMapper.readValue(json, LocationDTO.class);
             String city = requestbBody.getCity();
             String region = requestbBody.getRegion();
             String country = requestbBody.getCountry();
-            Double longitude = requestbBody.getLongitude();
             Double latitude = requestbBody.getLatitude();
-            Location savedLocation = locationService.createLocation(city, region, country, longitude, latitude);
+            Double longitude = requestbBody.getLongitude();
+            Location savedLocation = locationService.createLocation(city, region, country, latitude, longitude);
             LocationDTO locationDTO = maptoLocationDTO(savedLocation);
             String serializedLocationDTO = objectMapper.writeValueAsString(locationDTO);
             return serializedLocationDTO;
         } catch (Exception e) {
             return String.format("{\"errorMessage\":\"%s\"}", e.getMessage());
+        }
+    }
+
+    public String getAllLocations() {
+        try {
+            List<Location> locations = locationService.getLocations();
+            List<LocationDTO> locationDTOList = locations.stream()
+                    .map(this::maptoLocationDTO)
+                    .collect(Collectors.toList());
+            String s = objectMapper.writeValueAsString(locationDTOList);
+            return s;
+        } catch (JsonProcessingException e) {
+            return String.format("{\"message", "something not work\"}", e.getMessage());
         }
     }
 
@@ -36,9 +53,8 @@ public class LocationControler {
         locationDTO.setCity(savedLocation.getCity());
         locationDTO.setRegion(savedLocation.getRegion());
         locationDTO.setCountry(savedLocation.getCountry());
-        locationDTO.setLongitude(savedLocation.getLongitude());
         locationDTO.setLatitude(savedLocation.getLatitude());
+        locationDTO.setLongitude(savedLocation.getLongitude());
         return locationDTO;
-
     }
 }

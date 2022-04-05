@@ -49,23 +49,25 @@ public class UseInterfaces {
         String region = scanner.nextLine();
         System.out.println("Podaj Nazwe kraju");
         String country = scanner.nextLine();
-        System.out.println("Podaj dlugosc geograficzna");
-        Double longitude = scanner.nextDouble();
         System.out.println("Podaj szerokosc geograficzną");
         Double latitude = scanner.nextDouble();
-        String requestbody = String.format("{\"city\":\"%s\",\"region\":\"%s\",\"country\":\"%s\",\"longitude\":\"%s\",\"latitude\":\"%s\"}",
-                city, region, country, longitude, latitude);
+        System.out.println("Podaj dlugosc geograficzna");
+        Double longitude = scanner.nextDouble();
+        String requestbody = String.format("{\"city\":\"%s\",\"region\":\"%s\",\"country\":\"%s\",\"latitude\":\"%s\",\"longitude\":\"%s\"}",
+                city, region, country, latitude, longitude);
         System.out.println("Wysłane Dane z strony uzytkownika " + requestbody);
-        String responseBody = locationControler.createLocation(requestbody);
-        System.out.println("Odebrany http response: " + responseBody);
+        locationControler.createLocations(requestbody);
 
     }
 
     private void showLocation() {
+        String allLocations = locationControler.getAllLocations();
+        System.out.println("Odebrany http response: "+ allLocations);
 
     }
 
     private void loadLocation() {
+
 
     }
 }
