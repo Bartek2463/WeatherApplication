@@ -8,6 +8,9 @@ public class UseInterfaces {
 
     private final LocationControler locationControler;
 
+
+
+
     public UseInterfaces(LocationControler locationControler) {
         this.locationControler = locationControler;
     }
