@@ -51,7 +51,7 @@ public class LocationControler {
         LocationDTO locationDTO = new LocationDTO();
         locationDTO.setId(savedLocation.getId());
         locationDTO.setCity(savedLocation.getCity());
-        locationDTO.setRegion(savedLocation.getRegion());
+        locationDTO.setRegion(savedLocation.getRegion().orElse(null));
         locationDTO.setCountry(savedLocation.getCountry());
         locationDTO.setLatitude(savedLocation.getLatitude());
         locationDTO.setLongitude(savedLocation.getLongitude());

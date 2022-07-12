@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -26,5 +27,8 @@ public class Location {
         this.country = country;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+    public Optional<String> getRegion(){
+        return Optional.ofNullable(region);
     }
 }
