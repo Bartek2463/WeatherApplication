@@ -2,19 +2,16 @@ package com.sda.weather.location;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 public class LocationControler {
 
     private final ObjectMapper objectMapper;
     private final LocationService locationService;
-
-    public LocationControler(ObjectMapper objectMapper, LocationService locationService) {
-        this.objectMapper = objectMapper;
-        this.locationService = locationService;
-    }
 
     public String createLocations(String json) {
         try {

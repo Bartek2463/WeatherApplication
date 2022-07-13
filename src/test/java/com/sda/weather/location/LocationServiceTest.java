@@ -1,33 +1,39 @@
 package com.sda.weather.location;
 
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.assertj.core.api.Assert;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 public class LocationServiceTest {
 
-    LocationService locationService;
+    private static LocationService locationService;
+    private static LocationRepositoryMock locationRepositoryMock;
 
-    @BeforeEach
-    void setUp() {
-        LocationRepository locationRepository = new LocationRepositoryMock();
-        ObjectMapper objectMapper = new ObjectMapper();
-        locationService = new LocationService(locationRepository, objectMapper);
+    @BeforeAll
+    static void setUp() {
+        locationRepositoryMock = new LocationRepositoryMock();
+        locationService = new LocationService(locationRepositoryMock);
 
     }
+
+    @AfterEach
+    void tearDown() {
+        locationRepositoryMock.clear();
+    }
+
 
     @DisplayName("Data_Proper")
     @Test
     void createLocation_whenDataIsProper_returnsNewObject() {
         Location result = locationService.createLocation("Warszawa", "Europa", "Polska", 0.0, 0.0);
 
-        assertThat(result.getId()).isNotNull();
+        assertThat(result).isNotNull();
         assertThat(result.getCity()).isNotNull();
         assertThat(result.getCountry()).isNotNull();
         assertThat(result.getLatitude()).isNotNull();
@@ -38,14 +44,14 @@ public class LocationServiceTest {
     @DisplayName("Latitude_minminus")
     @Test
     void createLocation_whenLatitude_S_MinMinus() {
-        Throwable result = catchThrowable(() -> locationService.createLocation("Warszawa", "Europa", "Polska", -91.0, 0.0));
+        Throwable result = catchThrowable(() -> locationService.createLocation("Warszawa", "Europa", "Polska", 0.0, -91.0));
         assertThat(result).isExactlyInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("Latitude_max")
     @Test
     void createLocation_whenLatitude_N_MaxPlus() {
-        Throwable result = catchThrowable(() -> locationService.createLocation("Warszawa", "Europa", "Polska", 91.0, 0.0));
+        Throwable result = catchThrowable(() -> locationService.createLocation("Warszawa", "Europa", "Polska", 0.0, 91.0));
         assertThat(result).isExactlyInstanceOf(IllegalArgumentException.class);
     }
 
@@ -89,8 +95,13 @@ public class LocationServiceTest {
     @DisplayName("Region_is_blank")
     @Test
     void createLocation_whenRegionIsBlank() {
-        Throwable result = catchThrowable(() -> locationService.createLocation("Warszawa", "                       ", "Polska", 90.0, 80.0));
-        assertThat(result).isExactlyInstanceOf(IllegalArgumentException.class);
+        Location result = locationService.createLocation("Warszawa", "   ", "Polska", 90.0, 80.0);
+        assertThat(result).isNotNull();
+        assertThat(result.getCity()).isEqualTo("Warszawa");
+        assertThat(result.getRegion()).isEmpty();
+        assertThat(result.getCountry()).isEqualTo("Polska");
+        assertThat(result.getLongitude()).isEqualTo(90.0);
+        assertThat(result.getLatitude()).isEqualTo(80.0);
 
     }
 

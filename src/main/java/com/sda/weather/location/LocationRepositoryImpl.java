@@ -3,9 +3,9 @@ package com.sda.weather.location;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public class LocationRepositoryImpl implements LocationRepository {
 
@@ -19,7 +19,9 @@ public class LocationRepositoryImpl implements LocationRepository {
     public Location save(Location location) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
+
         session.persist(location);
+
         transaction.commit();
         session.close();
         return location;
@@ -30,14 +32,27 @@ public class LocationRepositoryImpl implements LocationRepository {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
 
-        Query<Location> locations = session.createQuery("From Location",Location.class);
-        List<Location> resultList = locations.getResultList();
+        List<Location> locations = session.createQuery("FROM Location").getResultList();
 
         transaction.commit();
         session.close();
+        return locations;
+    }
 
-        return resultList;
+    @Override
+    public Optional<Location> getLocationByid(Long id) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
 
+        Optional<Location> location = session.createQuery("SELECT l FROM Location l WHERE l.id =:id", Location.class)
+                .setParameter("id", id)
+                .getResultList()
+                .stream()
+                .findAny();
+
+        transaction.commit();
+        session.close();
+        return location;
     }
 }
 
