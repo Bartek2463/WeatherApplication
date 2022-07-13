@@ -7,4 +7,6 @@ public interface LocationRepository {
 
  Location save(Location location);
  List<Location> findAll();
+
+ Optional<Location> getLocationByid(Long id);
 }
