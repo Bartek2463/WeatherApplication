@@ -2,6 +2,10 @@ package com.sda.weather;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sda.weather.forecast.ForecastRepositoryImpl;
+import com.sda.weather.forecast.ForecastService;
+import com.sda.weather.forecast.client.ForecastClient;
+import com.sda.weather.forecast.client.ForecastResponseMapper;
 import com.sda.weather.location.*;
 import com.sda.weather.location.LocationControler;
 import com.sda.weather.location.LocationRepository;
@@ -34,6 +38,11 @@ public class WeatherApplication {
         LocationControler locationControler = new LocationControler(objectMapper, locationService);
         Scanner scanner = new Scanner(System.in);
         UseInterfaces useInterfaces = new UseInterfaces(scanner,locationControler);
+        ForecastRepositoryImpl forecastRepository = new ForecastRepositoryImpl(sessionFactory);
+        ForecastResponseMapper forecastResponseMapper = new ForecastResponseMapper();
+
+        ForecastClient forecastClient = new ForecastClient(forecastResponseMapper,objectMapper);
+        ForecastService forecastService = new ForecastService(locationService,forecastClient, forecastRepository);
 
 
         useInterfaces.run();

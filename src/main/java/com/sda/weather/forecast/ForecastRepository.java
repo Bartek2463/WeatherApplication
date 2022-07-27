@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface ForecastRepository {
     Forecast save(Forecast forecast);
-    Optional<Forecast> findByLocation(Location location,LocalDate now,LocalDate forecastDate);
+    Optional<Forecast> findByLocation(Location location,LocalDate creationDate,LocalDate forecastDate);
 }

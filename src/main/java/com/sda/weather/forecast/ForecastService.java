@@ -12,10 +12,8 @@ import java.time.LocalDate;
 public class ForecastService {
 
     private final LocationService locationService;
-
-    private ForecastClient forecastClient;
-
-    private ForecastRepository forecastRepository;
+    private  final ForecastClient forecastClient;
+    private  final ForecastRepository forecastRepository;
 
    Forecast getForecast(String lacationId,String period){
        //ternary opearator check value if sholud by integer
@@ -31,9 +29,12 @@ public class ForecastService {
        }
        Location location = locationService.getLocationByid(lacationId)
                .orElseThrow(() -> new RuntimeException("Location" + lacationId + "does not exists"));
+
        LocalDate now = LocalDate.now();
        LocalDate forecastDate = now.plusDays(periodValue);
-       return
+
+       return forecastRepository.findByLocation(location,now,forecastDate)
+               .orElseGet(()->generateForecast(location,forecastDate));
    }
 
 
@@ -43,6 +44,9 @@ public class ForecastService {
     private Forecast generateForecast(Location location, LocalDate forecastDate){
         Forecast forecast = forecastClient.getForecast(location.getLatitude(), location.getLongitude(), forecastDate)
                 .orElseThrow(() -> new InternalException("Forecast connot be genereted" + location.getCity()));
+        forecast.setLocation(location);
+        forecast.setCreationDate(LocalDate.now());
+        return forecastRepository.save(forecast);
     }
 
 }
