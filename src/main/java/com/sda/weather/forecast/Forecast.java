@@ -20,7 +20,7 @@ public class Forecast {
     private  int humidity;
     private float windSpeed;
     private int windDirection;
-    private LocalDate creationdate;
+    private LocalDate creationDate;
     private LocalDate forecastDate;
 
     @ManyToOne
