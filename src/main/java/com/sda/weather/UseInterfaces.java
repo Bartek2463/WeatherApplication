@@ -42,6 +42,10 @@ public class UseInterfaces {
     }
 
     private void getWeatherForecast() {
+        System.out.println("Podaj id lokalizacji: ");
+        String cityId = scanner.nextLine();
+        System.out.println("Podaj dzień prognozy [1-5] (opcjonalnie):");
+        String period = scanner.nextLine();
     }
     private void createLocation() {
         Scanner scanner = new Scanner(System.in);
