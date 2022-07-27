@@ -17,10 +17,10 @@ public class ForecastClient {
     private final ForecastResponseMapper forecastResponseMapper;
     private final ObjectMapper objectMapper;
 
-    public Optional<Forecast> getForecast(Float latitude, Float Longitude, LocalDate forecastDate){
+    public Optional<Forecast> getForecast(Float latitude, Float longitude, LocalDate forecastDate){
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .GET()
-                .uri(URI.create(String.format(URL, latitude, latitude)))
+                .uri(URI.create(String.format(URL, latitude,longitude )))
                 .build();
         HttpClient httpClient = HttpClient.newHttpClient();
         try{
@@ -30,7 +30,8 @@ public class ForecastClient {
             ForecastResponse forecastResponse = objectMapper.readValue(responseBody, ForecastResponse.class);
 
             return forecastResponse.getDaily().stream()
-                    .filter(f->forecastResponseMapper::asForecast)
+                    .filter(f->forecastResponseMapper.asLocalDate(f.getTimestamp()).isEqual(forecastDate))
+                    .map(forecastResponseMapper::asForecast)
                     .findFirst();
         }catch (Exception e){
             return Optional.empty();
